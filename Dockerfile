@@ -2,11 +2,13 @@ FROM node:18
 
 WORKDIR /app
 
-COPY backend/package*.json ./
+# copy package.json from root
+COPY package*.json ./
 RUN npm install
 
-COPY backend/ .
+# copy backend code
+COPY backend/ ./backend
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+CMD ["node", "backend/server.js"]
