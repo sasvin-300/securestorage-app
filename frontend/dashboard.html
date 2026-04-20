@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+
+<body>
+
+<h2>Secure Storage Dashboard 🚀</h2>
+
+<input type="file" id="fileInput"><br><br>
+
+<button type="button" id="uploadBtn">Upload</button>
+
+<p id="msg"></p>
+
+<div id="result"></div>
+
+<script>
+document.getElementById("uploadBtn").addEventListener("click", async function () {
+
+    const file = document.getElementById("fileInput").files[0];
+
+    if (!file) {
+        document.getElementById("msg").innerText = "Please select a file";
+        return;
+    }
+
+    document.getElementById("msg").innerText = "Uploading... ⏳";
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+        const res = await fetch("/upload", {   // 🔥 IMPORTANT CHANGE
+            method: "POST",
+            body: formData
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            document.getElementById("msg").innerText = "Upload successful 🚀";
+
+            const box = document.createElement("div");
+            box.style.border = "1px solid #ccc";
+            box.style.padding = "10px";
+            box.style.marginTop = "10px";
+
+            box.innerHTML = `
+                <p><b>Uploaded File:</b></p>
+                <a href="${data.fileUrl}" target="_blank">${data.fileUrl}</a>
+                <br><br>
+                <img src="${data.fileUrl}" width="200">
+                <hr>
+            `;
+
+            document.getElementById("result").appendChild(box);
+
+        } else {
+            document.getElementById("msg").innerText = "Upload failed";
+        }
+
+    } catch (err) {
+        console.log(err);
+        document.getElementById("msg").innerText = "Server error";
+    }
+});
+</script>
+
+</body>
+</html>
